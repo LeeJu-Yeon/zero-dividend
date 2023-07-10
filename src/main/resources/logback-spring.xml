@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- 로그가 저장될 디렉토리 경로 -->
+    <property name="LOG_DIR" value="./"/>
+    <!-- 로그 파일명 -->
+    <property name="LOG_FILE_NAME" value="mylog"/>
+
+    <!-- 콘솔에 남길 로그 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- 로그 패턴 : 날짜 로그레벨 어디서발생했는지 -->
+            <pattern> %d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) %magenta(%-4relative) --- [ %thread{10} ] %cyan(%logger{20}) : %msg%n </pattern>
+        </encoder>
+    </appender>
+
+    <!-- 파일에 남길 로그 -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 로그 파일명 -->
+        <file>${LOG_DIR}/${LOG_FILE_NAME}.log</file>
+        <!-- 롤링 정책 : 사이즈, 시간 기준 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 생성되는 파일명 패턴 : 파일명 날짜 번호 -->
+            <fileNamePattern>${LOG_DIR}/${LOG_FILE_NAME}-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- 파일 사이즈가 10MB 이상이면 새로운 파일 생성 -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- 최대 30일 보관 -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <!-- 로그 패턴 -->
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 패키지별로 어떤 로그레벨부터 로그를 남길건지 정의 -->
+    <logger name="org.springframework" level="info"/>
+    <logger name="org.hibernate" level="info"/>
+    <root level="info">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>
